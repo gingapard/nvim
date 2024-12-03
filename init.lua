@@ -12,8 +12,8 @@ vim.cmd "set nowrap"
 -- Set tab settings
 vim.o.expandtab = true     
 vim.o.breakindent = true
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
+vim.o.shiftwidth = 8
+vim.o.tabstop = 8
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.signcolumn= "yes"
@@ -27,9 +27,11 @@ vim.cmd "highlight Keyword guifg=NONE guibg=NONE gui=bold"
 vim.cmd "highlight Type guifg=#dba848 guibg=NONE gui=bold"
 vim.cmd "highlight Statement guifg=NONE  guibg=NONE gui=bold"
 vim.cmd "highlight PreProc guifg=#ebf0af  guibg=NONE gui=bold"
-vim.cmd "highlight Function guifg=#219abf guibg=NONE=NONE"
+vim.cmd "highlight Function guifg=#94A1AD guibg=NONE=NONE"
+vim.cmd "highlight Identifier guifg=#C2C2C2 guibg=NONE gui=NONE"
 
--- Enable mouse support
+
+-- Enable mouse suppor
 vim.o.mouse = "a"
 
 -- Enable filetype detection and plugins
@@ -47,6 +49,9 @@ vim.api.nvim_set_keymap('n', '<leader>e', ':Explore<CR>', { noremap = true })
 -- Undo
 vim.cmd('set undofile')
 
+-- Format
+vim.api.nvim_set_keymap('n', 'fG', ':lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+
 -- Show manual
 vim.api.nvim_set_keymap('n', '<shift>k', ':Man <cword><CR>', { noremap = true, silent = true })
 
@@ -55,11 +60,21 @@ vim.api.nvim_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.definition()<CR>', { no
 
 -- Telescope
 vim.api.nvim_set_keymap('n', 'tD', ':Telescope find_files<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'fg', ':Telescope live_grep<CR>', { noremap = true, silent = true })
 
 
 -- plugins
 require('plugin.packer')
 require("mason").setup()
+
+vim.diagnostic.config({
+  virtual_text = false,    -- Disable inline diagnostics (error text)
+  signs = false,            -- Keep signs (icons) in the gutter
+  underline = false,        -- Keep underlining for diagnostics
+  update_in_insert = false,-- Disable updates while in insert mode
+  severity_sort = true,    -- Sort diagnostics by severity (error > warning > info)
+})
+
 local lspconfig = require("lspconfig")
 
 -- Rust Lsp
@@ -78,8 +93,7 @@ cmp.setup({
 })
 
 -- C Lsp
-lspconfig.clangd.setup({
-})
+lspconfig.clangd.setup({})
 
 local cmp = require('cmp')
 cmp.setup({
